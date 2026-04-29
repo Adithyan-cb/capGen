@@ -1,0 +1,8 @@
+django
+gunicorn
+redis
+langchain
+langchain-google-genai
+pillow
+python-dotenv
+requests

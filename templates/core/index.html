@@ -1,0 +1,211 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>capGen — AI Instagram Post Caption Generator | Editorial Precision</title>
+    <meta name="description"
+        content="Generate engaging Instagram captions, hashtags, and song recommendations from your photos in seconds with capGen. Premium editorial AI for creators.">
+    <meta name="keywords"
+        content="Instagram caption generator, AI captions, social media tool, hashtag generator, Instagram music matching">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+    <nav class="header-nav container">
+        <a href="/" class="logo">capGen</a>
+        <div class="nav-links">
+            <a href="#capabilities" class="nav-link">Capabilities</a>
+            <a href="#faq" class="nav-link">FAQ</a>
+            <a href="https://github.com/capGen" class="nav-link">GitHub</a>
+        </div>
+    </nav>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="container">
+            <form action="/generate/" method="POST" id="generation-form" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="hero-grid">
+                    <div class="hero-content">
+                        <h1>Unlock Viral Captions</h1>
+                        <p class="description">Instantly generate on-vibe Instagram captions, trending hashtags, and the
+                            perfect soundtrack for your posts using advanced visual AI.</p>
+
+                        <div class="control-group">
+                            <label class="control-label">select the vibe</label>
+                            <div class="vibe-pills" id="vibe-pills">
+                                <button type="button" class="vibe-pill active">Aesthetic</button>
+                                <button type="button" class="vibe-pill">Funny</button>
+                                <button type="button" class="vibe-pill">Professional</button>
+                                <button type="button" class="vibe-pill">Poetic</button>
+                                <button type="button" class="vibe-pill">Sassy</button>
+                                <button type="button" class="vibe-pill">Casual</button>
+                                <button type="button" class="vibe-pill">Romantic</button>
+                                <button type="button" class="vibe-pill">Trendy</button>
+                                <button type="button" class="vibe-pill">Motivational</button>
+                                <button type="button" class="vibe-pill">Nostalgic</button>
+                                <input type="hidden" name="vibe" id="vibe-input" value="Aesthetic">
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <label class="control-label">select No.of captions</label>
+                            <div style="display: flex; gap: 12px;">
+                                <button type="button" class="count-pill active" data-count="3">01</button>
+                                <button type="button" class="count-pill" data-count="5">02</button>
+                                <button type="button" class="count-pill" data-count="10">04</button>
+                                <input type="hidden" name="count" id="count-input" value="3">
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn-generate" id="generate-btn">Collect Results</button>
+                    </div>
+
+                    <div class="hero-upload">
+                        <div class="upload-canvas" id="drop-zone">
+                            <div class="upload-icon">
+                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                    <polyline points="17 8 12 3 7 8"></polyline>
+                                    <line x1="12" y1="3" x2="12" y2="15"></line>
+                                </svg>
+                            </div>
+                            <div style="margin-top: 10px;">
+                                <h3 style="font-size: 20px; font-weight: 800; margin-bottom: 4px;">Drop your canvas</h3>
+                                <p style="color: #9CA3AF; font-size: 14px;">Upload your photo to start the editorial
+                                    analysis. High resolution preferred.</p>
+                            </div>
+                            <input type="file" name="image" id="image-upload" style="display: none;" accept="image/*">
+                        </div>
+
+                        <div id="preview-container" style="display: none; margin-top: 24px;">
+                            <div
+                                style="position: relative; border-radius: 24px; overflow: hidden; box-shadow: var(--shadow-soft);">
+                                <img id="preview-image" src="" alt="Preview"
+                                    style="width: 100%; display: block; object-fit: cover; max-height: 480px;">
+                                <button type="button" id="remove-btn"
+                                    style="position: absolute; top: 16px; right: 16px; background: white; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E63946"
+                                        stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </section>
+
+        <!-- Capabilities Section -->
+        <section id="capabilities" class="container section-padding reveal"
+            style="border-top: 1.5px solid var(--color-border);">
+            <header style="text-align: center; margin-bottom: 64px;">
+                <h2 style="font-size: 40px; margin-top: 12px;">Beyond Just Words</h2>
+            </header>
+
+            <div class="capability-grid">
+                <div class="capability-card reveal">
+                    <h4 style="color: var(--color-coral);">Smart Captions</h4>
+                    <p>Context-aware generation that understands the nuance of your visual composition and emotional
+                        undertones.</p>
+                </div>
+                <div class="capability-card reveal">
+                    <h4 style="color: var(--color-coral);">Hashtag Strategy</h4>
+                    <p>Proprietary popularity mapping to ensure your content reaches the intended audience across
+                        platforms.</p>
+                </div>
+                <div class="capability-card reveal">
+                    <h4 style="color: var(--color-coral);">Audio Matching</h4>
+                    <p>Suggested trending sounds and tracks that align perfectly with your image's aesthetic vibe.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ Section -->
+        <section id="faq" class="container section-padding reveal"
+            style="background: rgba(255,255,255,0.4); border-top: 1.5px solid var(--color-border);">
+            <header style="text-align: center;">
+                <h2 style="font-size: 40px; margin-top: 12px;">Frequently Asked Questions</h2>
+            </header>
+
+            <div class="faq-list">
+                <div class="faq-item">
+                    <button class="faq-trigger">
+                        How does capGen choose hashtags?
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </button>
+                    <div class="faq-content">
+                        <p>Our AI analyzes your image and selected vibe to suggest relevant hashtags. Each hashtag includes a popularity indicator (Low, Medium, High, or Trending) so you can balance reach and competition.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-trigger">
+                        What do the popularity colors mean?
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </button>
+                    <div class="faq-content">
+                        <p><strong>Gray (Low)</strong> — Niche tags, less competition, highly targeted audience<br>
+                        <strong>Yellow (Medium)</strong> — Moderate reach and competition<br>
+                        <strong>Orange (High)</strong> — Popular tags with significant reach<br>
+                        <strong>Coral (Trending)</strong> — Currently viral, maximum visibility potential</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-trigger">
+                        Why can't I hear the preview?
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </button>
+                    <div class="faq-content">
+                        <p>If the preview isn't playing, check your device volume, ensure you're not in silent mode, and try refreshing the page. Some songs may be unavailable in your region due to licensing restrictions.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-trigger">
+                        How do I generate captions?
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </button>
+                    <div class="faq-content">
+                        <p>It's simple: (1) Upload the image you want to post, (2) Select a vibe that matches your mood or aesthetic, (3) Choose how many results you want (3, 5, or 10), and (4) Click Generate. Your captions, hashtags, and song recommendations will appear instantly.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="main-footer">
+        <div class="container footer-content">
+            <a href="/" class="logo" style="color: white;">capGen</a>
+            <p style="color: #9CA3AF; font-size: 14px;">© 2026 capGen All rights reserved.</p>
+            <div class="nav-links">
+                <a href="#" class="nav-link" style="color: white; opacity: 0.7;">GitHub</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{% static 'js/main.js' %}"></script>
+</body>
+
+</html>

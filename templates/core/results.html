@@ -1,0 +1,347 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Results — capGen</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        .results-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 24px;
+        }
+
+        .result-image-wrapper {
+            width: 100%;
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            box-shadow: var(--shadow-soft);
+            margin-bottom: 64px;
+            background: var(--color-white);
+        }
+
+        .result-image-wrapper img {
+            width: 100%;
+            display: block;
+            object-fit: cover;
+            max-height: 600px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+        }
+
+        .badge-ai {
+            font-size: 10px;
+            font-weight: 800;
+            background: var(--color-coral);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            letter-spacing: 0.05em;
+        }
+
+        .caption-card {
+            background: var(--color-white);
+            border: 1.5px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            transition: all 0.2s ease;
+        }
+
+        .caption-card:hover {
+            border-color: var(--color-ink);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-whisper);
+        }
+
+        .caption-text {
+            font-size: 16px;
+            color: var(--color-ink);
+            line-height: 1.6;
+            margin-right: 20px;
+        }
+
+        .copy-btn {
+            background: transparent;
+            border: none;
+            color: var(--color-gray-text);
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .copy-btn:hover {
+            background: var(--color-background);
+            color: var(--color-coral);
+        }
+
+        .hashtag-cloud {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 64px;
+        }
+
+        .hashtag-pill {
+            padding: 8px 16px;
+            background: var(--color-white);
+            border: 1.5px solid var(--color-border);
+            border-radius: var(--radius-full);
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--color-ink);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .hashtag-pill:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-whisper);
+        }
+
+        .hashtag-pill.active {
+            background: var(--color-ink);
+            border-color: var(--color-ink);
+            color: white;
+        }
+
+        .popularity-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .pop-low { background: #9CA3AF; }      /* Gray */
+        .pop-medium { background: #FBBF24; }   /* Yellow */
+        .pop-high { background: #F97316; }     /* Orange */
+        .pop-trending { background: var(--color-coral); } /* Coral */
+
+        .track-card {
+            background: var(--color-white);
+            border: 1.5px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .track-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .track-art {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            background: #eee;
+            object-fit: cover;
+        }
+
+        .track-title {
+            font-weight: 700;
+            font-size: 15px;
+            display: block;
+        }
+
+        .track-artist {
+            font-size: 13px;
+            color: var(--color-gray-text);
+        }
+
+        .play-btn {
+            width: 40px;
+            height: 40px;
+            background: var(--color-coral);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .action-bar {
+            margin-top: 80px;
+            text-align: center;
+        }
+
+        .btn-back {
+            text-decoration: none;
+            color: var(--color-ink);
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 14px;
+            letter-spacing: 0.1em;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="header-nav container">
+        <a href="/" class="logo">capGen</a>
+        <div class="nav-links">
+            <a href="https://github.com/capGen" class="nav-link">GitHub</a>
+        </div>
+    </nav>
+
+    <main class="results-container">
+        <!-- Hero Image -->
+        <div class="result-image-wrapper reveal active">
+            <img src="{{ image_url|default:'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&q=80&w=1200' }}"
+                alt="Editorial Canvas">
+        </div>
+
+        <!-- Captions Section -->
+        <section class="reveal active" style="margin-bottom: 64px;">
+            <div class="section-header">
+                <div>
+                    <span class="badge-ai">AI GENERATED</span>
+                    <h2 style="font-size: 32px; margin-top: 8px;">Smart Captions</h2>
+                </div>
+            </div>
+
+            {% for caption in captions %}
+            <div class="caption-card">
+                <p class="caption-text">{{ caption }}</p>
+                <button class="copy-btn" onclick="copyToClipboard('{{ caption|escapejs }}')">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                </button>
+            </div>
+            {% empty %}
+            <div class="caption-card">
+                <p class="caption-text">Chasing horizons and capturing the editorial essence of the moment. ✨</p>
+                <button class="copy-btn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg></button>
+            </div>
+            {% endfor %}
+        </section>
+
+        <!-- Hashtags Section -->
+        <section class="reveal active" style="margin-bottom: 64px;">
+            <div class="section-header">
+                <h2 style="font-size: 32px;">Smart Hashtags</h2>
+                <button class="btn-generate" style="width: auto; padding: 10px 20px; font-size: 13px; margin: 0;">Copy
+                    Selected</button>
+            </div>
+            <div class="hashtag-cloud">
+                {% for hash in hashtags %}
+                <div class="hashtag-pill" data-tag="{{ hash.tag }}">
+                    <span class="popularity-indicator pop-{{ hash.popularity }}"></span>
+                    {{ hash.tag }}
+                </div>
+                {% empty %}
+                <div class="hashtag-pill active"><span class="popularity-indicator pop-low"></span>#editorial</div>
+                <div class="hashtag-pill active"><span class="popularity-indicator pop-medium"></span>#aesthetic</div>
+                <div class="hashtag-pill"><span class="popularity-indicator pop-high"></span>#storytelling</div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <!-- Tracks Section -->
+        <section class="reveal active">
+            <h2 style="font-size: 32px; margin-bottom: 24px;">Recommended Tracks</h2>
+
+            <div class="track-card">
+                <div class="track-info">
+                    <img src="https://i.scdn.co/image/ab67616d0000b273b7548b2518e3848b6c8f498c" class="track-art"
+                        alt="Art">
+                    <div>
+                        <span class="track-title">Midnight City</span>
+                        <span class="track-artist">M83</span>
+                    </div>
+                </div>
+                <button class="play-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="track-card">
+                <div class="track-info">
+                    <img src="https://i.scdn.co/image/ab67616d0000b27367830867018f44e13360ab9d" class="track-art"
+                        alt="Art">
+                    <div>
+                        <span class="track-title">Nightcall</span>
+                        <span class="track-artist">Kavinsky</span>
+                    </div>
+                </div>
+                <button class="play-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                    </svg>
+                </button>
+            </div>
+        </section>
+
+        <div class="action-bar">
+            <a href="/" class="btn-back">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                    <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+                use another image.
+            </a>
+        </div>
+    </main>
+
+    <footer class="main-footer" style="margin-top: 120px;">
+        <div class="container footer-content">
+            <a href="/" class="logo" style="color: white;">capGen</a>
+            <p style="color: #9CA3AF; font-size: 14px;">© 2026 capGen All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Copied to clipboard!');
+            });
+        }
+
+        // Toggle hashtags
+        document.querySelectorAll('.hashtag-pill').forEach(pill => {
+            pill.addEventListener('click', () => {
+                pill.classList.toggle('active');
+            });
+        });
+    </script>
+</body>
+
+</html>
