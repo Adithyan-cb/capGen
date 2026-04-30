@@ -31,6 +31,16 @@
     <main>
         <!-- Hero Section -->
         <section class="container">
+            {% if messages or error %}
+            <div class="error-container"
+                style="margin-bottom: 24px; padding: 16px; background: #FEE2E2; border: 1.5px solid #EF4444; border-radius: 12px; color: #B91C1C; font-weight: 600; text-align: center;">
+                {% for message in messages %}
+                {{ message }}
+                {% endfor %}
+                {% if error %}{{ error }}{% endif %}
+            </div>
+            {% endif %}
+
             <form action="/generate/" method="POST" id="generation-form" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="hero-grid">
@@ -59,10 +69,10 @@
                         <div class="control-group">
                             <label class="control-label">select No.of captions</label>
                             <div style="display: flex; gap: 12px;">
-                                <button type="button" class="count-pill active" data-count="3">01</button>
-                                <button type="button" class="count-pill" data-count="5">02</button>
-                                <button type="button" class="count-pill" data-count="10">04</button>
-                                <input type="hidden" name="count" id="count-input" value="3">
+                                <button type="button" class="count-pill active" data-count="1">01</button>
+                                <button type="button" class="count-pill" data-count="2">02</button>
+                                <button type="button" class="count-pill" data-count="4">04</button>
+                                <input type="hidden" name="count" id="count-input" value="1">
                             </div>
                         </div>
 
@@ -71,36 +81,56 @@
 
                     <div class="hero-upload">
                         <div class="upload-canvas" id="drop-zone">
-                            <div class="upload-icon">
-                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                    stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                                    <polyline points="17 8 12 3 7 8"></polyline>
-                                    <line x1="12" y1="3" x2="12" y2="15"></line>
-                                </svg>
-                            </div>
-                            <div style="margin-top: 10px;">
-                                <h3 style="font-size: 20px; font-weight: 800; margin-bottom: 4px;">Drop your canvas</h3>
-                                <p style="color: #9CA3AF; font-size: 14px;">Upload your photo to start the editorial
-                                    analysis. High resolution preferred.</p>
-                            </div>
-                            <input type="file" name="image" id="image-upload" style="display: none;" accept="image/*">
-                        </div>
-
-                        <div id="preview-container" style="display: none; margin-top: 24px;">
-                            <div
-                                style="position: relative; border-radius: 24px; overflow: hidden; box-shadow: var(--shadow-soft);">
-                                <img id="preview-image" src="" alt="Preview"
-                                    style="width: 100%; display: block; object-fit: cover; max-height: 480px;">
-                                <button type="button" id="remove-btn"
-                                    style="position: absolute; top: 16px; right: 16px; background: white; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
-                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E63946"
+                            <!-- Empty State -->
+                            <div id="upload-placeholder" style="text-align: center; width: 100%;">
+                                <div class="upload-icon" style="margin: 0 auto 20px;">
+                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                         stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                        <polyline points="17 8 12 3 7 8"></polyline>
+                                        <line x1="12" y1="3" x2="12" y2="15"></line>
                                     </svg>
-                                </button>
+                                </div>
+                                <div style="margin-top: 10px;">
+                                    <h3 id="upload-title"
+                                        style="font-size: 20px; font-weight: 800; margin-bottom: 4px;">Drop your canvas
+                                    </h3>
+                                    <p id="upload-status" style="color: #9CA3AF; font-size: 14px;">Upload your photo for
+                                        caption generation.</p>
+                                </div>
                             </div>
+
+                            <!-- File Info State (Hidden initially) -->
+                            <div id="preview-container"
+                                style="display: none; padding: 20px; text-align: center; width: 100%;">
+                                <div class="file-info-box"
+                                    style="background: var(--color-background); border: 1.5px solid var(--color-border); border-radius: 16px; padding: 32px; position: relative; width: 100%;">
+                                    <div class="upload-icon" style="margin: 0 auto 16px;">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                                            stroke-linejoin="round">
+                                            <path
+                                                d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z">
+                                            </path>
+                                            <polyline points="14 2 14 8 20 8"></polyline>
+                                        </svg>
+                                    </div>
+                                    <h4 id="file-info-text"
+                                        style="font-size: 15px; font-weight: 600; color: var(--color-ink); margin-top: 8px;">
+                                        filename : file.jpg | size : 0.0 KB</h4>
+
+                                    <button type="button" id="remove-btn"
+                                        style="position: absolute; top: -12px; right: -12px; background: var(--color-coral); border: none; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(230,57,70,0.3); z-index: 10;">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white"
+                                            stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <input type="file" name="image" id="image-upload" style="display: none;" accept="image/*">
                         </div>
                     </div>
                 </div>
@@ -149,7 +179,9 @@
                         </svg>
                     </button>
                     <div class="faq-content">
-                        <p>Our AI analyzes your image and selected vibe to suggest relevant hashtags. Each hashtag includes a popularity indicator (Low, Medium, High, or Trending) so you can balance reach and competition.</p>
+                        <p>Our AI analyzes your image and selected vibe to suggest relevant hashtags. Each hashtag
+                            includes a popularity indicator (Low, Medium, High, or Trending) so you can balance reach
+                            and competition.</p>
                     </div>
                 </div>
                 <div class="faq-item">
@@ -162,9 +194,10 @@
                     </button>
                     <div class="faq-content">
                         <p><strong>Gray (Low)</strong> — Niche tags, less competition, highly targeted audience<br>
-                        <strong>Yellow (Medium)</strong> — Moderate reach and competition<br>
-                        <strong>Orange (High)</strong> — Popular tags with significant reach<br>
-                        <strong>Coral (Trending)</strong> — Currently viral, maximum visibility potential</p>
+                            <strong>Yellow (Medium)</strong> — Moderate reach and competition<br>
+                            <strong>Orange (High)</strong> — Popular tags with significant reach<br>
+                            <strong>Coral (Trending)</strong> — Currently viral, maximum visibility potential
+                        </p>
                     </div>
                 </div>
                 <div class="faq-item">
@@ -176,7 +209,9 @@
                         </svg>
                     </button>
                     <div class="faq-content">
-                        <p>If the preview isn't playing, check your device volume, ensure you're not in silent mode, and try refreshing the page. Some songs may be unavailable in your region due to licensing restrictions.</p>
+                        <p>If the preview isn't playing, check your device volume, ensure you're not in silent mode, and
+                            try refreshing the page. Some songs may be unavailable in your region due to licensing
+                            restrictions.</p>
                     </div>
                 </div>
                 <div class="faq-item">
@@ -188,7 +223,9 @@
                         </svg>
                     </button>
                     <div class="faq-content">
-                        <p>It's simple: (1) Upload the image you want to post, (2) Select a vibe that matches your mood or aesthetic, (3) Choose how many results you want (3, 5, or 10), and (4) Click Generate. Your captions, hashtags, and song recommendations will appear instantly.</p>
+                        <p>It's simple: (1) Upload the image you want to post, (2) Select a vibe that matches your mood
+                            or aesthetic, (3) Choose how many results you want (3, 5, or 10), and (4) Click Generate.
+                            Your captions, hashtags, and song recommendations will appear instantly.</p>
                     </div>
                 </div>
             </div>
