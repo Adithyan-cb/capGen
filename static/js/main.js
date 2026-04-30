@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const dropZone = document.getElementById('drop-zone');
     const fileInput = document.getElementById('image-upload');
     const previewContainer = document.getElementById('preview-container');
-    const previewImage = document.getElementById('preview-image');
+    const fileInfoText = document.getElementById('file-info-text');
     const removeBtn = document.getElementById('remove-btn');
     
     const vibePills = document.querySelectorAll('.vibe-pill');
@@ -15,9 +15,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const vibeInput = document.getElementById('vibe-input');
     const countInput = document.getElementById('count-input');
     const form = document.querySelector('form');
+    const uploadPlaceholder = document.getElementById('upload-placeholder');
     
     let selectedVibe = 'Aesthetic';
-    let selectedCount = 3;
+    let selectedCount = 1;
 
     // --- Count Logic ---
     countPills.forEach(pill => {
@@ -62,23 +63,49 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     function handleFile(file) {
-        if (!file.type.startsWith('image/')) return;
+        console.log('Handling file:', file.name, file.type, file.size);
+        if (!file.type.startsWith('image/')) {
+            console.warn('File is not an image:', file.type);
+            return;
+        }
         
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            previewImage.src = e.target.result;
-            dropZone.style.display = 'none';
-            previewContainer.style.display = 'block';
-        };
-        reader.readAsDataURL(file);
+        const infoString = `filename : ${file.name} | size : ${formatBytes(file.size)}`;
+        
+        // Update both possible locations to be safe
+        if (fileInfoText) fileInfoText.textContent = infoString;
+        
+        const uploadStatus = document.getElementById('upload-status');
+        if (uploadStatus) uploadStatus.textContent = infoString;
+        
+        console.log('Updating UI for file upload...');
+        
+        if (uploadPlaceholder) uploadPlaceholder.style.display = 'none';
+        if (previewContainer) previewContainer.style.display = 'block';
+        if (dropZone) {
+            dropZone.style.borderStyle = 'none';
+            dropZone.style.padding = '20px';
+        }
     }
 
-    removeBtn.addEventListener('click', () => {
-        fileInput.value = '';
-        previewImage.src = '';
-        previewContainer.style.display = 'none';
-        dropZone.style.display = 'flex';
-    });
+    function formatBytes(bytes, decimals = 2) {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const dm = decimals < 0 ? 0 : decimals;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+    }
+
+    if (removeBtn) {
+        removeBtn.addEventListener('click', (e) => {
+            e.stopPropagation(); // Prevent trigger file input
+            fileInput.value = '';
+            previewContainer.style.display = 'none';
+            uploadPlaceholder.style.display = 'block';
+            dropZone.style.borderStyle = 'dashed';
+            dropZone.style.padding = '80px 40px';
+        });
+    }
 
     // --- FAQ Accordion ---
     faqItems.forEach(item => {
