@@ -255,13 +255,13 @@
         <section class="reveal active" style="margin-bottom: 64px;">
             <div class="section-header">
                 <h2 style="font-size: 32px;">Smart Hashtags</h2>
-                <button class="btn-generate" style="width: auto; padding: 10px 20px; font-size: 13px; margin: 0;">Copy
+                <button id="copy-hashtags-btn" class="btn-generate" style="width: auto; padding: 10px 20px; font-size: 13px; margin: 0;">Copy
                     Selected</button>
             </div>
             <div class="hashtag-cloud">
                 {% for hash in hashtags %}
                 <div class="hashtag-pill" data-tag="{{ hash.tag }}">
-                    <span class="popularity-indicator pop-{{ hash.popularity }}"></span>
+                    <span class="popularity-indicator pop-{{ hash.popularity|lower }}"></span>
                     {{ hash.tag }}
                 </div>
                 {% empty %}
@@ -269,43 +269,6 @@
                 <div class="hashtag-pill active"><span class="popularity-indicator pop-medium"></span>#aesthetic</div>
                 <div class="hashtag-pill"><span class="popularity-indicator pop-high"></span>#storytelling</div>
                 {% endfor %}
-            </div>
-        </section>
-
-        <!-- Tracks Section -->
-        <section class="reveal active">
-            <h2 style="font-size: 32px; margin-bottom: 24px;">Recommended Tracks</h2>
-
-            <div class="track-card">
-                <div class="track-info">
-                    <img src="https://i.scdn.co/image/ab67616d0000b273b7548b2518e3848b6c8f498c" class="track-art"
-                        alt="Art">
-                    <div>
-                        <span class="track-title">Midnight City</span>
-                        <span class="track-artist">M83</span>
-                    </div>
-                </div>
-                <button class="play-btn">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                    </svg>
-                </button>
-            </div>
-
-            <div class="track-card">
-                <div class="track-info">
-                    <img src="https://i.scdn.co/image/ab67616d0000b27367830867018f44e13360ab9d" class="track-art"
-                        alt="Art">
-                    <div>
-                        <span class="track-title">Nightcall</span>
-                        <span class="track-artist">Kavinsky</span>
-                    </div>
-                </div>
-                <button class="play-btn">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                    </svg>
-                </button>
             </div>
         </section>
 
@@ -331,7 +294,39 @@
     <script>
         function copyToClipboard(text) {
             navigator.clipboard.writeText(text).then(() => {
-                alert('Copied to clipboard!');
+                const btn = event?.currentTarget;
+                if (btn) {
+                    const originalHTML = btn.innerHTML;
+                    btn.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+                    setTimeout(() => { btn.innerHTML = originalHTML; }, 2000);
+                }
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+            });
+        }
+
+        function copySelectedHashtags() {
+            const selectedTags = Array.from(document.querySelectorAll('.hashtag-pill.active'))
+                .map(pill => pill.innerText.trim());
+            
+            if (selectedTags.length === 0) {
+                alert('Please select some hashtags first!');
+                return;
+            }
+
+            const textToCopy = selectedTags.join(' ');
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                const btn = document.getElementById('copy-hashtags-btn');
+                const originalText = btn.innerText;
+                btn.innerText = 'Copied!';
+                btn.style.background = '#10B981';
+                btn.style.borderColor = '#10B981';
+                
+                setTimeout(() => {
+                    btn.innerText = originalText;
+                    btn.style.background = '';
+                    btn.style.borderColor = '';
+                }, 2000);
             });
         }
 
@@ -341,6 +336,9 @@
                 pill.classList.toggle('active');
             });
         });
+
+        // Copy button listener
+        document.getElementById('copy-hashtags-btn').addEventListener('click', copySelectedHashtags);
     </script>
 </body>
 
