@@ -44,41 +44,6 @@
             <form action="/generate/" method="POST" id="generation-form" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="hero-grid">
-                    <div class="hero-content">
-                        <h1>Unlock Viral Captions</h1>
-                        <p class="description">Instantly generate on-vibe Instagram captions, trending hashtags, and the
-                            perfect soundtrack for your posts using advanced visual AI.</p>
-
-                        <div class="control-group">
-                            <label class="control-label">select the vibe</label>
-                            <div class="vibe-pills" id="vibe-pills">
-                                <button type="button" class="vibe-pill active">Aesthetic</button>
-                                <button type="button" class="vibe-pill">Funny</button>
-                                <button type="button" class="vibe-pill">Professional</button>
-                                <button type="button" class="vibe-pill">Poetic</button>
-                                <button type="button" class="vibe-pill">Sassy</button>
-                                <button type="button" class="vibe-pill">Casual</button>
-                                <button type="button" class="vibe-pill">Romantic</button>
-                                <button type="button" class="vibe-pill">Trendy</button>
-                                <button type="button" class="vibe-pill">Motivational</button>
-                                <button type="button" class="vibe-pill">Nostalgic</button>
-                                <input type="hidden" name="vibe" id="vibe-input" value="Aesthetic">
-                            </div>
-                        </div>
-
-                        <div class="control-group">
-                            <label class="control-label">select No.of captions</label>
-                            <div style="display: flex; gap: 12px;">
-                                <button type="button" class="count-pill active" data-count="1">01</button>
-                                <button type="button" class="count-pill" data-count="2">02</button>
-                                <button type="button" class="count-pill" data-count="4">04</button>
-                                <input type="hidden" name="count" id="count-input" value="1">
-                            </div>
-                        </div>
-
-                        <button type="submit" class="btn-generate" id="generate-btn">Collect Results</button>
-                    </div>
-
                     <div class="hero-upload">
                         <div class="upload-canvas" id="drop-zone">
                             <!-- Empty State -->
@@ -93,9 +58,9 @@
                                 </div>
                                 <div style="margin-top: 10px;">
                                     <h3 id="upload-title"
-                                        style="font-size: 20px; font-weight: 800; margin-bottom: 4px;">Drop your canvas
+                                        style="font-size: clamp(16px, 4vw, 20px); font-weight: 800; margin-bottom: 4px;">Drop your canvas
                                     </h3>
-                                    <p id="upload-status" style="color: #9CA3AF; font-size: 14px;">Upload your photo for
+                                    <p id="upload-status" style="color: #9CA3AF; font-size: clamp(12px, 2.5vw, 14px);">Upload your photo for
                                         caption generation.</p>
                                 </div>
                             </div>
@@ -133,6 +98,41 @@
                             <input type="file" name="image" id="image-upload" style="display: none;" accept="image/*">
                         </div>
                     </div>
+
+                    <div class="hero-content">
+                        <h1>Unlock Viral Captions</h1>
+                        <p class="description">Instantly generate on-vibe Instagram captions, trending hashtags, and the
+                            perfect soundtrack for your posts using advanced visual AI.</p>
+
+                        <div class="control-group">
+                            <label class="control-label">select the vibe</label>
+                            <div class="vibe-pills" id="vibe-pills">
+                                <button type="button" class="vibe-pill active">Aesthetic</button>
+                                <button type="button" class="vibe-pill">Funny</button>
+                                <button type="button" class="vibe-pill">Professional</button>
+                                <button type="button" class="vibe-pill">Poetic</button>
+                                <button type="button" class="vibe-pill">Sassy</button>
+                                <button type="button" class="vibe-pill">Casual</button>
+                                <button type="button" class="vibe-pill">Romantic</button>
+                                <button type="button" class="vibe-pill">Trendy</button>
+                                <button type="button" class="vibe-pill">Motivational</button>
+                                <button type="button" class="vibe-pill">Nostalgic</button>
+                                <input type="hidden" name="vibe" id="vibe-input" value="Aesthetic">
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <label class="control-label">select No.of captions</label>
+                            <div style="display: flex; gap: 12px;">
+                                <button type="button" class="count-pill active" data-count="1">01</button>
+                                <button type="button" class="count-pill" data-count="2">02</button>
+                                <button type="button" class="count-pill" data-count="4">04</button>
+                                <input type="hidden" name="count" id="count-input" value="1">
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn-generate" id="generate-btn">Collect Results</button>
+                    </div>
                 </div>
             </form>
         </section>
@@ -140,8 +140,8 @@
         <!-- Capabilities Section -->
         <section id="capabilities" class="container section-padding reveal"
             style="border-top: 1.5px solid var(--color-border);">
-            <header style="text-align: center; margin-bottom: 64px;">
-                <h2 style="font-size: 40px; margin-top: 12px;">Beyond Just Words</h2>
+            <header style="text-align: center; margin-bottom: clamp(24px, 5vw, 64px);">
+                <h2 style="font-size: clamp(28px, 5vw, 40px); margin-top: 12px;">Beyond Just Words</h2>
             </header>
 
             <div class="capability-grid">
@@ -165,8 +165,8 @@
         <!-- FAQ Section -->
         <section id="faq" class="container section-padding reveal"
             style="background: rgba(255,255,255,0.4); border-top: 1.5px solid var(--color-border);">
-            <header style="text-align: center;">
-                <h2 style="font-size: 40px; margin-top: 12px;">Frequently Asked Questions</h2>
+            <header style="text-align: center; margin-bottom: clamp(24px, 5vw, 64px);">
+                <h2 style="font-size: clamp(28px, 5vw, 40px); margin-top: 12px;">Frequently Asked Questions</h2>
             </header>
 
             <div class="faq-list">
