@@ -87,12 +87,29 @@ h1, h2, h3, h4 {
     justify-content: space-between;
     padding: 0 40px;
     background: var(--color-background);
+    width: 100%;
 }
 
 @media (max-width: 640px) {
     .header-nav {
         padding: 0 16px;
         height: 64px;
+    }
+}
+
+.header-nav .container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+@media (max-width: 640px) {
+    .header-nav .container {
+        padding: 0 16px;
     }
 }
 
@@ -434,7 +451,7 @@ h1, h2, h3, h4 {
     }
 }
 
-.faq-item.active .faq-content {
+.faq-item.faq-open .faq-content {
     max-height: 200px;
 }
 
