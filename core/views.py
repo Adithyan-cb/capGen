@@ -7,8 +7,12 @@ from .services.music import search_songs
 import base64
 
 def home(request):
-    """Renders the main landing page with the upload zone."""
+    """Renders the landing page (marketing only)."""
     return render(request, 'core/index.html')
+
+def generate_page(request):
+    """Renders the generator page with upload zone."""
+    return render(request, 'core/generate.html')
 
 @csrf_exempt
 def generate(request):
@@ -17,10 +21,9 @@ def generate(request):
         count = request.POST.get('count', '3')
         image_file = request.FILES.get('image')
 
-        # Error handling for missing image
         if not image_file:
             messages.error(request, "please upload an image")
-            return render(request, 'core/index.html', {'error': "please upload an image"})
+            return render(request, 'core/generate.html', {'error': "please upload an image"})
 
         try:
             # Generate captions and hashtags
@@ -64,6 +67,6 @@ def generate(request):
         except Exception as e:
             print(f"Error during generation view: {e}")
             messages.error(request, "An error occurred during generation. Please try again.")
-            return redirect('home')
+            return redirect('generate_page')
     
     return redirect('home')
