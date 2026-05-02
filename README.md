@@ -1,4 +1,4 @@
-![capGen Banner](https://via.placeholder.com/1200x400/fafafa/1a1a1a?text=capGen)
+![capGen Banner](images)
 
 > AI-powered Instagram caption, hashtag & song recommendation generator.
 
