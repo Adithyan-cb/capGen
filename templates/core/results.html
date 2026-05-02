@@ -131,10 +131,26 @@
             border-radius: 50%;
         }
 
-        .pop-low { background: #9CA3AF; }      /* Gray */
-        .pop-medium { background: #FBBF24; }   /* Yellow */
-        .pop-high { background: #F97316; }     /* Orange */
-        .pop-trending { background: var(--color-coral); } /* Coral */
+        .pop-low {
+            background: #9CA3AF;
+        }
+
+        /* Gray */
+        .pop-medium {
+            background: #FBBF24;
+        }
+
+        /* Yellow */
+        .pop-high {
+            background: #F97316;
+        }
+
+        /* Orange */
+        .pop-trending {
+            background: var(--color-coral);
+        }
+
+        /* Coral */
 
         .track-card {
             background: var(--color-white);
@@ -145,12 +161,15 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+            gap: 16px;
         }
 
         .track-info {
             display: flex;
             align-items: center;
             gap: 16px;
+            flex: 1;
+            min-width: 0;
         }
 
         .track-art {
@@ -159,17 +178,92 @@
             border-radius: 8px;
             background: #eee;
             object-fit: cover;
+            flex-shrink: 0;
         }
 
         .track-title {
             font-weight: 700;
             font-size: 15px;
             display: block;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .track-artist {
             font-size: 13px;
             color: var(--color-gray-text);
+        }
+
+        .track-card audio {
+            display: none;
+        }
+
+        .audio-player {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-shrink: 0;
+        }
+
+        .play-button {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--color-coral);
+            border: none;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .play-button:hover {
+            transform: scale(1.1);
+            box-shadow: var(--shadow-whisper);
+        }
+
+        .play-button svg {
+            width: 14px;
+            height: 14px;
+            fill: white;
+        }
+
+        .progress-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+            min-width: 80px;
+        }
+
+        .progress-bar {
+            flex: 1;
+            height: 4px;
+            background: var(--color-border);
+            border-radius: var(--radius-full);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--color-coral);
+            border-radius: var(--radius-full);
+            width: 0%;
+            transition: width 0.1s linear;
+        }
+
+        .time-display {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--color-gray-text);
+            font-family: var(--font-mono);
+            min-width: 36px;
         }
 
         .play-btn {
@@ -255,7 +349,8 @@
         <section class="reveal active" style="margin-bottom: 64px;">
             <div class="section-header">
                 <h2 style="font-size: 32px;">Smart Hashtags</h2>
-                <button id="copy-hashtags-btn" class="btn-generate" style="width: auto; padding: 10px 20px; font-size: 13px; margin: 0;">Copy
+                <button id="copy-hashtags-btn" class="btn-generate"
+                    style="width: auto; padding: 10px 20px; font-size: 13px; margin: 0;">Copy
                     Selected</button>
             </div>
             <div class="hashtag-cloud">
@@ -271,6 +366,51 @@
                 {% endfor %}
             </div>
         </section>
+
+        <!-- Song Recommendations Section -->
+        {% if songs %}
+        <section class="reveal active" style="margin-bottom: 64px;">
+            <div class="section-header">
+                <div>
+                    <span class="badge-ai">AI GENERATED</span>
+                    <h2 style="font-size: 32px; margin-top: 8px;">Recommended Songs</h2>
+                </div>
+            </div>
+            {% for song in songs %}
+            <div class="track-card">
+                <div class="track-info">
+                    <img src="{{ song.album_cover|default:'https://via.placeholder.com/48' }}" alt="Album Art"
+                        class="track-art">
+                    <div>
+                        <span class="track-title">{{ song.title }}</span>
+                        <span class="track-artist">{{ song.artist_name }}</span>
+                    </div>
+                </div>
+                <div class="audio-player">
+                    <button class="play-button" onclick="togglePlay(this, '{{ song.id }}')"
+                        data-preview="{{ song.preview }}">
+                        <svg class="play-icon" viewBox="0 0 24 24">
+                            <polygon points="5,3 19,12 5,21"></polygon>
+                        </svg>
+                        <svg class="pause-icon" viewBox="0 0 24 24" style="display:none;">
+                            <rect x="6" y="4" width="4" height="16"></rect>
+                            <rect x="14" y="4" width="4" height="16"></rect>
+                        </svg>
+                    </button>
+                    <div class="progress-container">
+                        <div class="progress-bar" onclick="seekAudio(event, this)">
+                            <div class="progress-fill"></div>
+                        </div>
+                        <span class="time-display" data-duration="{{ song.duration }}">0:30</span>
+                    </div>
+                </div>
+                <audio id="audio-{{ song.id }}" preload="none">
+                    <source src="{{ song.preview }}" type="audio/mpeg">
+                </audio>
+            </div>
+            {% endfor %}
+        </section>
+        {% endif %}
 
         <div class="action-bar">
             <a href="/" class="btn-back">
@@ -308,7 +448,7 @@
         function copySelectedHashtags() {
             const selectedTags = Array.from(document.querySelectorAll('.hashtag-pill.active'))
                 .map(pill => pill.innerText.trim());
-            
+
             if (selectedTags.length === 0) {
                 alert('Please select some hashtags first!');
                 return;
@@ -321,7 +461,7 @@
                 btn.innerText = 'Copied!';
                 btn.style.background = '#10B981';
                 btn.style.borderColor = '#10B981';
-                
+
                 setTimeout(() => {
                     btn.innerText = originalText;
                     btn.style.background = '';
@@ -339,6 +479,51 @@
 
         // Copy button listener
         document.getElementById('copy-hashtags-btn').addEventListener('click', copySelectedHashtags);
+
+        // Custom Audio Player
+        function togglePlay(btn, songId) {
+            const audio = document.getElementById('audio-' + songId);
+            const playIcon = btn.querySelector('.play-icon');
+            const pauseIcon = btn.querySelector('.pause-icon');
+            const progressFill = btn.parentElement.querySelector('.progress-fill');
+            const timeDisplay = btn.parentElement.querySelector('.time-display');
+            const duration = parseInt(timeDisplay.dataset.duration) || 30;
+
+            if (audio.paused) {
+                audio.play();
+                playIcon.style.display = 'none';
+                pauseIcon.style.display = 'block';
+
+                audio.ontimeupdate = () => {
+                    const percent = (audio.currentTime / audio.duration) * 100;
+                    progressFill.style.width = percent + '%';
+                    timeDisplay.textContent = formatTime(audio.currentTime);
+                };
+
+                audio.onended = () => {
+                    playIcon.style.display = 'block';
+                    pauseIcon.style.display = 'none';
+                    progressFill.style.width = '0%';
+                    timeDisplay.textContent = formatTime(duration);
+                };
+            } else {
+                audio.pause();
+                playIcon.style.display = 'block';
+                pauseIcon.style.display = 'none';
+            }
+        }
+
+        function seekAudio(event, bar) {
+            const audio = bar.closest('.track-card').querySelector('audio');
+            const rect = bar.getBoundingClientRect();
+            const percent = (event.clientX - rect.left) / rect.width;
+            audio.currentTime = percent * audio.duration;
+        }
+
+        function formatTime(seconds) {
+            const secs = Math.floor(seconds);
+            return '0:' + (secs < 10 ? '0' : '') + secs;
+        }
     </script>
 </body>
 

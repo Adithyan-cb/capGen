@@ -3,6 +3,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
 from .services.caption import analyze_image_and_generate_captions
+from .services.music import search_songs
 import base64
 
 def home(request):
@@ -35,10 +36,29 @@ def generate(request):
             image_file.seek(0)
             results = analyze_image_and_generate_captions(image_file, vibe, count)
             
+            # Process song recommendations
+            songs = []
+            seen_songs = set()
+            raw_songs = results.get('song_recommendations', [])
+            
+            for idx, song in enumerate(raw_songs):
+                if len(songs) >= 3:
+                    break
+                song_key = f"{song.get('artist_name', '').lower()}-{song.get('song_name', '').lower()}"
+                if song_key in seen_songs:
+                    continue
+                seen_songs.add(song_key)
+                
+                track_data = search_songs(song.get('artist_name', ''), song.get('song_name', ''))
+                if track_data and track_data.get('preview'):
+                    track_data['id'] = idx + 1
+                    songs.append(track_data)
+            
             context = {
                 'captions': results['captions'],
                 'hashtags': results['hashtags'],
                 'image_url': image_data_uri,
+                'songs': songs,
             }
             return render(request, 'core/results.html', context)
         except Exception as e:

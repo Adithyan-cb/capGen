@@ -12,9 +12,14 @@ class Hashtag(BaseModel):
     tag: str = Field(description="The hashtag including the # symbol")
     popularity: str = Field(description="Popularity level: low, medium, high, or trending")
 
+class SongRecommendation(BaseModel):
+    artist_name: str = Field(description="The artist name")
+    song_name: str = Field(description="The song title")
+
 class CaptionResult(BaseModel):
     text: str = Field(description="The caption text")
     hashtags: List[Hashtag] = Field(description="List of hashtags specific to this caption")
+    song_recommendations: List[SongRecommendation] = Field(description="List of song recommendations matching the photo and vibe")
 
 class GenerationResponse(BaseModel):
     captions: List[CaptionResult] = Field(description="List of engaging Instagram captions with their hashtags")
@@ -73,17 +78,20 @@ def analyze_image_and_generate_captions(image_file, vibe, count):
             return {
                 "captions": ["Error generating captions. Please try again."],
                 "caption_details": [],
-                "hashtags": []
+                "hashtags": [],
+                "song_recommendations": []
             }
         return {
             "captions": [cap.text for cap in response.captions],
             "caption_details": [cap.dict() for cap in response.captions],
-            "hashtags": [h.dict() for cap in response.captions for h in cap.hashtags]
+            "hashtags": [h.dict() for cap in response.captions for h in cap.hashtags],
+            "song_recommendations": [s.dict() for cap in response.captions for s in cap.song_recommendations]
         }
     except Exception as e:
         print(f"Error generating captions: {e}")
         return {
             "captions": ["Error generating captions. Please try again."],
             "caption_details": [],
-            "hashtags": []
+            "hashtags": [],
+            "song_recommendations": []
         }
