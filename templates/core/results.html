@@ -387,9 +387,15 @@
                     </div>
                 </div>
                 <div class="audio-player">
-                    <button class="play-button" onclick="togglePlay(this, '{{ song.id }}')" data-preview="{{ song.preview }}">
-                        <svg class="play-icon" viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"></polygon></svg>
-                        <svg class="pause-icon" viewBox="0 0 24 24" style="display:none;"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+                    <button class="play-button" onclick="togglePlay(this, '{{ song.id }}')"
+                        data-preview="{{ song.preview }}">
+                        <svg class="play-icon" viewBox="0 0 24 24">
+                            <polygon points="5,3 19,12 5,21"></polygon>
+                        </svg>
+                        <svg class="pause-icon" viewBox="0 0 24 24" style="display:none;">
+                            <rect x="6" y="4" width="4" height="16"></rect>
+                            <rect x="14" y="4" width="4" height="16"></rect>
+                        </svg>
                     </button>
                     <div class="progress-container">
                         <div class="progress-bar" onclick="seekAudio(event, this)">
