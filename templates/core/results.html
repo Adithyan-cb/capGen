@@ -19,6 +19,12 @@
             padding: 40px 24px;
         }
 
+        @media (max-width: 640px) {
+            .results-container {
+                padding: 24px 16px;
+            }
+        }
+
         .result-image-wrapper {
             width: 100%;
             border-radius: var(--radius-xl);
@@ -28,6 +34,12 @@
             background: var(--color-white);
         }
 
+        @media (max-width: 640px) {
+            .result-image-wrapper {
+                margin-bottom: 40px;
+            }
+        }
+
         .result-image-wrapper img {
             width: 100%;
             display: block;
@@ -35,11 +47,26 @@
             max-height: 600px;
         }
 
+        @media (max-width: 640px) {
+            .result-image-wrapper img {
+                max-height: 300px;
+            }
+        }
+
         .section-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
             margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        @media (max-width: 640px) {
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
         }
 
         .badge-ai {
@@ -62,6 +89,14 @@
             justify-content: space-between;
             align-items: flex-start;
             transition: all 0.2s ease;
+            gap: 16px;
+        }
+
+        @media (max-width: 640px) {
+            .caption-card {
+                padding: 16px;
+                flex-direction: column;
+            }
         }
 
         .caption-card:hover {
@@ -75,6 +110,15 @@
             color: var(--color-ink);
             line-height: 1.6;
             margin-right: 20px;
+            flex: 1;
+        }
+
+        @media (max-width: 640px) {
+            .caption-text {
+                font-size: 14px;
+                margin-right: 0;
+                margin-bottom: 12px;
+            }
         }
 
         .copy-btn {
@@ -85,6 +129,7 @@
             padding: 8px;
             border-radius: 8px;
             transition: all 0.2s ease;
+            flex-shrink: 0;
         }
 
         .copy-btn:hover {
@@ -97,6 +142,13 @@
             flex-wrap: wrap;
             gap: 10px;
             margin-bottom: 64px;
+        }
+
+        @media (max-width: 640px) {
+            .hashtag-cloud {
+                margin-bottom: 40px;
+                gap: 8px;
+            }
         }
 
         .hashtag-pill {
@@ -112,6 +164,13 @@
             align-items: center;
             gap: 8px;
             transition: all 0.2s ease;
+        }
+
+        @media (max-width: 640px) {
+            .hashtag-pill {
+                padding: 6px 12px;
+                font-size: 12px;
+            }
         }
 
         .hashtag-pill:hover {
@@ -164,12 +223,27 @@
             gap: 16px;
         }
 
+        @media (max-width: 640px) {
+            .track-card {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 12px;
+                padding: 12px;
+            }
+        }
+
         .track-info {
             display: flex;
             align-items: center;
             gap: 16px;
             flex: 1;
             min-width: 0;
+        }
+
+        @media (max-width: 640px) {
+            .track-info {
+                gap: 12px;
+            }
         }
 
         .track-art {
@@ -181,6 +255,13 @@
             flex-shrink: 0;
         }
 
+        @media (max-width: 640px) {
+            .track-art {
+                width: 40px;
+                height: 40px;
+            }
+        }
+
         .track-title {
             font-weight: 700;
             font-size: 15px;
@@ -188,6 +269,12 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+        }
+
+        @media (max-width: 640px) {
+            .track-title {
+                font-size: 14px;
+            }
         }
 
         .track-artist {
@@ -204,6 +291,13 @@
             align-items: center;
             gap: 12px;
             flex-shrink: 0;
+        }
+
+        @media (max-width: 640px) {
+            .audio-player {
+                justify-content: flex-start;
+                width: 100%;
+            }
         }
 
         .play-button {
@@ -238,6 +332,13 @@
             gap: 8px;
             flex: 1;
             min-width: 80px;
+        }
+
+        @media (max-width: 640px) {
+            .progress-container {
+                flex: 1;
+                min-width: 60px;
+            }
         }
 
         .progress-bar {
@@ -284,6 +385,12 @@
             text-align: center;
         }
 
+        @media (max-width: 640px) {
+            .action-bar {
+                margin-top: 48px;
+            }
+        }
+
         .btn-back {
             text-decoration: none;
             color: var(--color-ink);
@@ -294,6 +401,23 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
+        }
+
+        @media (max-width: 640px) {
+            .btn-back {
+                font-size: 12px;
+            }
+        }
+
+        .section-header h2 {
+            font-size: 32px;
+        }
+
+        @media (max-width: 640px) {
+            .section-header h2 {
+                font-size: 24px;
+                margin-top: 4px;
+            }
         }
     </style>
 </head>
@@ -424,7 +548,7 @@
         </div>
     </main>
 
-    <footer class="main-footer" style="margin-top: 120px;">
+    <footer class="main-footer">
         <div class="container footer-content">
             <a href="/" class="logo" style="color: white;">capGen</a>
             <p style="color: #9CA3AF; font-size: 14px;">© 2026 capGen All rights reserved.</p>
